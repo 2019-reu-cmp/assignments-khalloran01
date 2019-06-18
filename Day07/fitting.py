@@ -16,6 +16,7 @@ seymour.16@nd.edu
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
+import statistics as stat
 
 
 def gaus(x, A, mu, sigma):
@@ -50,9 +51,25 @@ def fitter(x, A0, mu0, sigma0, A1, mu1, sigma1):
     """
     Function to fit to the data. Two Gaussians that... 
     """
-    return
+    global G
+    global G1
+    G= A0 * np.exp(-(x - mu0)**2/(2 * sigma0**2))
+    G1= A1 * np.exp(-(x - mu1)**2/(2 * sigma1**2))
+    G_total=G+G1
+    return G_total
 
 
 bins, counts = np.loadtxt('two_peaks.txt', unpack=True)
+x=np.linspace(0,30,100)
+A=np.max(counts)
+mu=stat.mean(x)
+sigma=stat.stdev(x)
 
- = curve_fit() # fitting method
+
+pars, _ = curve_fit(fitter,bins,counts)
+
+plt.scatter(bins, counts)
+plt.plot(x, fitter(x, *pars))
+plt.plot(x,G)
+plt.plot(x,G1,100)
+plt.show()
